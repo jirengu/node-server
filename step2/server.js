@@ -39,8 +39,8 @@ function routePath(req, res){
   if(handleFn){
     req.query = pathObj.query
 
-
     //参考 https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction/
+    // post json 解析
     var body = ''
     req.on('data', function(chunk){
       body += chunk
@@ -56,8 +56,7 @@ function routePath(req, res){
 
 function staticRoot(staticPath, req, res){
   var pathObj = url.parse(req.url, true)
-  var filePath = path.resolve(staticPath, pathObj.pathname.substr(1))
-  console.log(filePath)
+  var filePath = path.join(staticPath, pathObj.pathname)
   fs.readFile(filePath,'binary', function(err, content){
     if(err){
       res.writeHead('404', 'haha Not Found')
@@ -79,13 +78,4 @@ function parseBody(body){
   return obj
 }
 
-
-
-/**
-TODO:
-1. MIME Type
-2. Cache
-3. Gzip
-4. Error Handing
-**/
 

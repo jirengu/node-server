@@ -5,19 +5,35 @@ var url = require('url')
 
 
 function staticRoot(staticPath, req, res){
-  /*
-    http://localhost:8080/a.html?t=1
-    pathObj.pathname => /a.html
-    pathObj.query.t => 1
-    filePath = /{{staticPath}}/a.html
-  */
+  
   var pathObj = url.parse(req.url, true)
-  var filePath = path.resolve(staticPath, pathObj.pathname.substr(1))
-  var fileContent = fs.readFileSync(filePath,'binary')
+  
+  /*
+  if(pathObj.pathname === '/'){
+    pathObj.pathname += 'index.html'
+  }
+  */
 
-  res.writeHead(200, 'Ok')
+  var filePath = path.join(staticPath, pathObj.pathname)
+  
+  var fileContent = fs.readFileSync(filePath,'binary')
   res.write(fileContent, 'binary')
   res.end()
+  
+  /*
+  fs.readFile(filePath, 'binary', function(err, fileContent){
+    if(err){
+      console.log('404')
+      res.writeHead(404, 'not found')
+      res.end('<h1>404 Not Found</h1>')
+    }else{
+      console.log('ok')
+      res.write(fileContent, 'binary')
+      res.end()      
+    }
+  })
+  */
+
 }
 
 var server = http.createServer(function(req, res){
@@ -28,11 +44,4 @@ server.listen(8080)
 console.log('visit http://localhost:8080' )
 
 
-/**
-TODO:
-1. MIME Type
-2. Cache
-3. Gzip
-4. Error Handing
-**/
 
