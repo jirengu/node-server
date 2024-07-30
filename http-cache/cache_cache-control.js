@@ -19,6 +19,11 @@ const path = require('path')
 
 
 http.createServer((req, res) => {
+    if (path.normalize(decodeURI(req.url)) !== decodeURI(req.url)) {
+        res.statusCode = 403;
+        res.end();
+        return;
+    }
 	let filePath = path.join(__dirname, req.url)
   fs.readFile(filePath, (err, data) => {
   	if (err) {
